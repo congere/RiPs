@@ -1,4 +1,5 @@
-﻿using iTextSharp.text.pdf;
+﻿using iTextSharp.text.log;
+using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
 using iTextSharp.xtra.iTextSharp.text.pdf.pdfcleanup;
 using NLog;
@@ -94,6 +95,9 @@ namespace RedactTextInPDFs
             int counterRedactedFiles = 0;
 
             Regex regex = new Regex(regexStr);
+
+            // Turns off AGPL licence note when looping many times (thousands).
+            CounterFactory.getInstance().SetCounter(new NoOpCounter());
 
             List<string> files = Directory.GetFiles(inDir, "*.pdf", System.IO.SearchOption.AllDirectories)
                                  .Where(path => regex.IsMatch(System.IO.Path.GetFileName(path)))
