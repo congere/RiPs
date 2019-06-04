@@ -1,22 +1,20 @@
-﻿using iTextSharp.text.log;
-using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.parser;
-using iTextSharp.xtra.iTextSharp.text.pdf.pdfcleanup;
-using NLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using iTextSharp.text.log;
+using iTextSharp.text.pdf;
+using iTextSharp.text.pdf.parser;
+using iTextSharp.xtra.iTextSharp.text.pdf.pdfcleanup;
+using NLog;
 
 namespace RedactTextInPDFs
 {
     class RedactTextInPDFs
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
-
-        //private string TEXTTOBEFOUND = "Producerad av PMF - Presenterad via PMF Web";
 
         static int Main(string[] args)
         {
@@ -86,6 +84,13 @@ namespace RedactTextInPDFs
             return 0;
         }
 
+        /// <summary>
+        /// Searches and redacts text from all PDF-files found in input directory. Writes result to output directory.
+        /// </summary>
+        /// <param name="inDir">Directory to read PDFs from</param>
+        /// <param name="outDir">Directory to write redacted PDFs to</param>
+        /// <param name="textToSearchAfter">Text to be redacted</param>
+        /// <param name="regexStr">Regular expression for searching specific filenames</param>
         public void SearchAndRedact(string inDir, string outDir, string textToSearchAfter, string regexStr)
         {
             List<RectAndText> RATs = null;
@@ -222,22 +227,16 @@ namespace RedactTextInPDFs
                                                         topRight[Vector.I2]
                                                         );
 
-                this.myPoints.Add(new RectAndText(rect, renderInfo.GetText(), Page));
+                this.myPoints.Add(new RectAndText { Rect = rect, Text = renderInfo.GetText(), Page = Page });
             }
         }
 
 
         private class RectAndText
         {
-            public iTextSharp.text.Rectangle Rect;
-            public String Text;
-            public int Page;
-            public RectAndText(iTextSharp.text.Rectangle rect, String text, int page)
-            {
-                this.Rect = rect;
-                this.Text = text;
-                this.Page = page;
-            }
+            public iTextSharp.text.Rectangle Rect { get; set; }
+            public String Text { get; set; }
+            public int Page { get; set; }
         }
     }
 }
